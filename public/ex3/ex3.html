@@ -43,41 +43,99 @@
                 const response = await axios.get("/categories")
 
                 //response object is objeect with arr of strigns 
-                const output = response.data; 
-                for (const item of output){
-                     const option = document.createElement("option"); 
-                     option.value = item; // simialr ot the html value option part we need it 
-
-                    option.innerText = item; 
-                    select.appendChild(option); 
-                }   
-
+                const output = response.data;
+                showCategories(output); 
             } catch (error) {
                 console.error("error fetching data:", error);
             }
-        }  
-        
-
-        function showCategories(categories) {
-            // Display the categories in the select element
-
         }
 
-        function getItems() {
+
+        async function showCategories(categories) {
+            // Display the categories in the select element
+            const select = document.getElementById("selectCategory");
+
+            try {
+                for (const item of categories) {
+                    const option = document.createElement("option");
+                    option.value = item; // simialr ot the html value option part we need it 
+
+                    option.innerText = item;
+                    select.appendChild(option);
+                }
+            } catch (error) {
+                console.error("error fetching data:", error);
+            }
+        }
+
+        async function getItems() {
             // Fetch items based on the selected category
             // If "To select" is chosen, do nothing
             // If "All" is chosen, fetch all items
             // If a specific category is chosen, fetch items for that category
             // url: http://localhost:3010/items?category=categoryName
+            try {
+                // issue an axios get request to "/data" and passing in the required params 
+                const response = await axios.get("/items"); 
+                const categorychosen = document.getElementById("selectCategory").value; 
 
+                //response object is arr of objetcs with key and value in str 
+                const output = response.data;
+                const itemsarr=[]; 
+                for (object of output){
+                    if (object.category==categorychosen || categorychosen=='all')
+                        itemsarr.push(object);
+                    else{
+                        const nothing = 'nil'; 
+                    }
+                
+                }
+                    showItems(itemsarr); 
+
+                
+            } catch (error) {
+                console.error("error fetching data:", error);
+            }
         }
 
         function showItems(items) {
             // Display the items in the itemsList div
             // Each item should be displayed in a bootstrap card format
             // The display should be responsive 3 columns on large screens, 2 columns on medium screens, and 1 column on small screens
+            //id 
+            
+            const itemid = document.getElementById("itemsList");
+            itemid.innerText=''; //to clear the previous session
+            if (items.length==0){
+                itemid.innerHTML = '<p class="text-center">No items</p>'; 
 
+                return; // exit cuase no item for this cat 
+            }
+            for (const item of items){
+                //create card container 
+                const cardCol = document.createElement("div"); 
+                cardCol.className = "col-lg-4 col-md-6 col-sm-12"; 
+                //create card element 
+                const card = document.createElement("div"); 
+                card.className = "card"; 
+                //card body 
+                const cardBody = document.createElement("div"); 
+                cardBody.className ="card-body"; 
+                //card title 
+                const cardTitle = document.createElement("h5"); 
+                cardTitle.className = 'card-title'; 
+                cardTitle.innerText=item.name; 
+                //card text 
+                const cardText = document.createElement("p"); 
+                cardText.className= 'card-text'; 
+                cardText.innerText='Price: $' + item.price.toFixed(2); 
+                cardBody.appendChild(cardTitle); 
+                cardBody.appendChild(cardText); 
 
+                card.appendChild(cardBody);
+                cardCol.appendChild(card); 
+                itemid.appendChild(cardCol); 
+            }
         }
 
     </script>
