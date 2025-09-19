@@ -23,13 +23,14 @@
         </select>
 
     </div>
-    <div id="result">
+    <div id="result"> 
+        <!-- thisis where we want to attach the ouput to  -->
 
     </div>
     <script>
         async function getData() {
-            const type = document.getElementById("type").value
-            const limit = document.getElementById("number").value
+            const type = document.getElementById("type").value;
+            const limit = document.getElementById("limit").value;
 
             try {
                 // issue an axios get request to "/data" and passing in the required params 
@@ -37,22 +38,26 @@
                     "params": {
                         "limit": limit,
                         "type": type
-
                     }
-                })
-                createTable(response.data);
+                }); 
+                createTable(response.data); // so we gonna throw the output inot the create table function to display as a table 
+
 
             } catch (error) {
-                console.log(error);
+                console.error("error fetching data:", error);
             }
         }
-
+        // to create the table using the response object and a function 
         function createTable(dataObj) {
             const resultDiv = document.getElementById("result");
             //clear pervious content 
+            // first child is the first child node inside result div 
+            // <h2> etc repeat until no children remain 
+                // runs the first time only and removes the prev child if any --> after that will stop and ntg if new child ele is added isnide until the next loop 
             while (resultDiv.firstChild) {
                 resultDiv.firstChild.remove();
             }
+            
             //create h2 element 
             const h2elem = document.createElement("h2");
             const h2val = dataObj["type"]
@@ -70,34 +75,59 @@
                 </table>
 
             */
-            const tableElem = document.createElement("table");
-            tableElem.className = 'table';
 
-            const tBodyElem = document.createElement("tbody");
-            //create table heading row 
-            const trElem = document.createElement("tr");
+                //create tble 
+            const table = document.createElement("table");
+            // classname is dom element that set the class attribute 
+            // similar to html default things  <table class="table"></table> for styling putpsoe to add in the class name 
+            table.className = 'table';
+            //table header 
+            const thElem = document.createElement("thead"); 
+            const trElem = document.createElement("tr")
+            
             //retrieve the keys from the first object on records array 
             const tblHeadings = Object.keys(dataObj["records"][0]) //first record is the first object 
-            //then i want the keys to put as headers 
+            //then i want the key  s to put as headers 
             //so thheadings will be array of the keys
             for (const headingVal of tblHeadings) {
                 const thElem = document.createElement("th"); //dont need the <> 
                 thElem.innerText = headingVal;
                 trElem.appendChild(thElem);
             }
-            tBodyElem.appendChild(trElem);
-            tableElem.appendChild(tBodyElem);
-            resultDiv.appendChild(tableElem)
+            //head we put it in row 
+            thElem.appendChild(trElem);
+            table.appendChild(thElem);
+            // resultDiv.appendChild(tableElem)
 
             //create the inner content of table 
-            for (let i = 0; i < dataObj["records"].length; i++) {
-                const trElem = document.createElement("tr");
-                for (let j = 0; j < tblHeadings.length; j++) {
-                    const tdVal = dataObj["records"][i][tblHeadings[j]]
-                    const tdElem = document.createElement("td")
-                    tdElem.innerText()
+            const tbody = document.createElement("tbody"); 
+            //const rows = Object(dataObj["data"]); // this is to wrap it in object 
+            // to access the rows from the obj 
+            const rows = dataObj.data; // retrieve all the rows as data
+
+            for (const r of rows){
+                // new row 
+    
+                const tdrow = document.createElement("tr"); 
+                for (const key of tblHeadings){
+                    const td = document.createElement("td"); 
+                    td.innerText = r[key]; 
+                    tdrow.appendChild(td);
                 }
+                
+                tbody.appendChild(tdrow); 
             }
+            table.appendChild(tbody); 
+            
+            // for (let i = 0; i < dataObj["records"].length; i++) {
+            //     const trElem = document.createElement("tr");
+            //     for (let j = 0; j < tblHeadings.length; j++) {
+            //         const tdVal = dataObj["records"][i][tblHeadings[j]]
+            //         const tdElem = document.createElement("td")
+            //         tdElem.innerText = tdVal; 
+            //         trElem.appendChild(tdElem); 
+            //     }
+            // }
 
         }
 
