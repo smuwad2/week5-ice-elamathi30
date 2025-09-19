@@ -61,6 +61,8 @@
             //create h2 element 
             const h2elem = document.createElement("h2");
             const h2val = dataObj["type"]
+            h2elem.innerText = h2val; 
+            resultDiv.appendChild(h2elem); 
             /*
             <table class="table table-bordered">
                     <thead>
@@ -82,7 +84,7 @@
             // similar to html default things  <table class="table"></table> for styling putpsoe to add in the class name 
             table.className = 'table';
             //table header 
-            const thElem = document.createElement("thead"); 
+            const thead = document.createElement("thead"); 
             const trElem = document.createElement("tr")
             
             //retrieve the keys from the first object on records array 
@@ -95,15 +97,15 @@
                 trElem.appendChild(thElem);
             }
             //head we put it in row 
-            thElem.appendChild(trElem);
-            table.appendChild(thElem);
+            thead.appendChild(trElem);
+            table.appendChild(thead);
             // resultDiv.appendChild(tableElem)
 
             //create the inner content of table 
             const tbody = document.createElement("tbody"); 
             //const rows = Object(dataObj["data"]); // this is to wrap it in object 
             // to access the rows from the obj 
-            const rows = dataObj.data; // retrieve all the rows as data
+            const rows = dataObj.records; // retrieve all the rows as data
 
             for (const r of rows){
                 // new row 
@@ -118,7 +120,7 @@
                 tbody.appendChild(tdrow); 
             }
             table.appendChild(tbody); 
-            
+
             // for (let i = 0; i < dataObj["records"].length; i++) {
             //     const trElem = document.createElement("tr");
             //     for (let j = 0; j < tblHeadings.length; j++) {
@@ -128,10 +130,15 @@
             //         trElem.appendChild(tdElem); 
             //     }
             // }
+            
+            // resultDiv.appendChild("table"); 
+            // above is wrong we cannot append the table as a string 
+            //nodes are must have tags no strings like tavle we have it in tag riught so can
+            resultDiv.appendChild(table); 
 
+            console.log("number of rows:", table.querySelectorAll("tbody tr").length); 
         }
-
-
+        
     </script>
 </body>
 
